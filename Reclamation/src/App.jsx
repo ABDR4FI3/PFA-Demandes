@@ -98,20 +98,20 @@ function App() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Removed Authorization header as token is now sent as a parameter in the request body
       },
-      body: JSON.stringify({ demande: noteData, token: token }), // Include the token as a parameter in the request body
+      body: JSON.stringify(noteData), // Send noteData as the request body
     };
   
     try {
-      console.log(noteData)
       const response = await fetch(
-        "http://localhost:9090/demandes/add?token=" + token,
+        `http://localhost:9090/demandes/add?token=${token}`, // Include the token as a URL query parameter
         requestOptions
       );
+  
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+  
       const data = await response.json();
       console.log("Note added successfully:", data);
       fetchDataFromApi();
@@ -119,6 +119,7 @@ function App() {
       console.error("There was a problem adding the note:", error);
     }
   };
+  
   
   
 

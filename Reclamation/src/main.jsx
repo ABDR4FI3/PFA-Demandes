@@ -4,12 +4,16 @@ import App from './App.jsx'
 import './index.css'
 import {createBrowserRouter , RouterProvider} from 'react-router-dom';
 import Login from './Login.jsx';
+import AdminHome from './AdminHome.jsx';
+import SignIn from './SignIn.jsx';
+import Fail from './Components/Fail.jsx';
 
 const router = createBrowserRouter([
   {
     //default to try new features
     path:'/',
-    element: <Login/>
+    element: <SignIn/>
+    //element: <Login/>
   },
   {
     path: '/home',
@@ -18,6 +22,18 @@ const router = createBrowserRouter([
   {
     path: '/Login',
     element:<Login/>
+  },
+  {
+    path: '/AdminHome',
+    element:<AdminHome/>
+  },
+  {
+    path: '/SignIn',
+    element:<SignIn/>
+  },
+  {
+    path: '/Fail',
+    element:<Fail/>
   }
 ]);
 

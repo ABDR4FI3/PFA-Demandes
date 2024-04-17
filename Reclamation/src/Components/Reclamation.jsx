@@ -38,13 +38,14 @@ function Reclamation(props) {
   return (
     <>
       <div
-        className={`custom-scrollbar rounded-xl ${backgroundColor} font-serif p-2 w-60 border-orange-950 border `}
+        className={`custom-scrollbar rounded-xl ${backgroundColor} font-serif p-2 w-60 border-orange-950 border`}
       >
         <div className="border-solid border-2 border-black">
-          <h2 className="text-center">{props.title}</h2>
+          <h2 className="text-center font-bold font-serif">{props.title}</h2>
           <div className="text-center">{formatDate(props.date)}</div>
         </div>
-        <span>{props.status}</span>
+        <span className="font-bold text-2xl">{props.status}</span>
+        <div className="mt-auto flex justify-center">{props.children}</div>
         <p className="mt-3">{props.details}</p>
       </div>
     </>

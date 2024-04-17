@@ -57,18 +57,21 @@ public class UserController {
     public Map<String, String> authenticateUser(@RequestBody Map<String, String> credentials) {
         String email = credentials.get("email");
         String password = credentials.get("password");
+        Map<String, String> response = new HashMap<>();
         // Retrieve user from database
         User user = userRepository.findByEmail(email);
         if (user != null && password.equals(user.getPassword())) {
             // Generate JWT token
             String token = jwtUtils.generateToken(user);
             // Return the token to the client
-            Map<String, String> response = new HashMap<>();
             response.put("token", token);
-            return response;
+            response.put("response","200");
+            response.put("role",user.getUserRole().getNomRole());
         } else {
-            throw new RuntimeException("Invalid credentials");
+            response.put("response","503");
+            response.put("role","err");
         }
+        return response;
     }
 
 
