@@ -43,15 +43,32 @@ public class DemandeController {
     }
     //add new User
     @PostMapping("/demandes/add")
-    public void PostUser(@RequestBody Demande demande){
-        /*Demande demande1 = demande;
+    public int PostUser(@RequestBody Demande demande , @RequestParam String token){
+
+        System.out.println(token);
         String userName = jwtUtils.extractUserName(token);
+        System.out.println(userName);
         User user = userRepository.findByUsername(userName);
-        demande1.setUser(user);
+        System.out.println(user.getUsername());
+        System.out.println(user.getUserRole());
+        System.out.println(user.getId());
+        System.out.println(user.getEmail());
+        System.out.println(user.getTel());
+        user.setDemandes(null);
         System.out.println(user);
-        System.out.println(demande1);*/
-        //demandeRepository.save(demande);
-        return;
+        System.out.println();
+        Demande demande1 = new Demande();
+        demande1.setUser(user);
+        demande1.setIdDemande(null);
+        demande1.setSujet(demande.getSujet());
+        demande1.setDate(demande.getDate());
+        demande1.setEtat("pending");
+        demande1.setTitle(demande.getTitle());
+
+        System.out.println("user");
+        System.out.println(demande1);
+        demandeRepository.save(demande1);
+        return 1;
     }
 
 
@@ -64,7 +81,6 @@ public class DemandeController {
     public void DeleteUser(@PathVariable long id){
         userService.dropUser(id);
     }
-
      */
 
     @GetMapping("/checkToken")
@@ -86,5 +102,27 @@ public class DemandeController {
         return demandes;
     }
 
+
+    @PostMapping("/reclamation/solve")
+    public int solveReclamation(@RequestBody String token ,@RequestParam Long id ){
+        String userName = jwtUtils.extractUserName(token);
+        User user = userRepository.findByUsername(userName);
+        Demande demande = demandeRepository.findByIdDemande(id);
+        demande.setEtat("Solved");
+        demandeRepository.save(demande);
+        System.out.println(user);
+        return 1;
+    }
+
+    @PostMapping("/reclamation/reject")
+    public int rejectReclamation(@RequestBody String token ,@RequestParam Long id){
+        String userName = jwtUtils.extractUserName(token);
+        User user = userRepository.findByUsername(userName);
+        Demande demande = demandeRepository.findByIdDemande(id);
+        demande.setEtat("Rejected");
+        demandeRepository.save(demande);
+        System.out.println(user);
+        return 1;
+    }
 
 }

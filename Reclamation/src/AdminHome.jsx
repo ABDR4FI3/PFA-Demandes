@@ -2,10 +2,40 @@ import Nav from "./Components/Nav";
 import Reclamation from "./Components/Reclamation";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect , useRef } from "react";
+import Rejected from "./Components/Rejected";
+import Approve from "./Components/Approve";
+import SessionExpired from "./Components/SessionExpired";
+
 function AdminHome() {
   const [reclamations, setReclamations] = useState([]);
   const navigate = useNavigate();
+
+  const [isLoginFailVisible, setIsLoginFailVisible] = useState(false);
+  const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
+  const [isSessionExpired, SetisSessionExpired] = useState(false);
+  const RejectedRef = useRef(null);
+  const ApprovedRef = useRef(null);
+  const SessionRef = useRef(null);
+
+  const switchOn = (ref) => {
+    console.log("test")
+    if (ref === RejectedRef) {
+      setIsLoginFailVisible(true);
+    } else if (ref === ApprovedRef) {
+      setIsLoginSuccessVisible(true);
+    }
+  };
+  const switchOnSimple = () => {
+    console.log("Session Expired")
+      SetisSessionExpired(true);
+  };
+
+  const switchOff = () => {
+    setIsLoginFailVisible(false);
+    setIsLoginSuccessVisible(false);
+  };
+
   useEffect(() => {
     const checkTokenValidity = async (token) => {
       try {
@@ -42,8 +72,11 @@ function AdminHome() {
           //navigate("/home");
         } else {
           // Token is not valid, remove it and navigate to login
+          switchOnSimple()
+          const SessionTimer = setTimeout(() =>navigate("/Login") , 3500);
           localStorage.removeItem("token");
-          navigate("/Login");
+
+          
         }
       });
     } else {
@@ -95,6 +128,9 @@ function AdminHome() {
       console.log(token);
       const data = await response.json();
       console.log("Response:", data);
+      switchOn(RejectedRef) 
+      const ApprovedTimer = setTimeout(() =>switchOff() , 3500); 
+
       // Perform any other actions based on the response, such as updating UI
     } catch (error) {
       console.error("Error:", error);
@@ -120,6 +156,8 @@ function AdminHome() {
       console.log(token);
       const data = await response.json();
       console.log("Response:", data);
+      switchOn(ApprovedRef); 
+      const ApprovedTimer = setTimeout(() =>switchOff() , 3500); 
       // Perform any other actions based on the response, such as updating UI
     } catch (error) {
       console.error("Error:", error);
@@ -131,6 +169,30 @@ function AdminHome() {
   return (
     <>
       <Nav></Nav>
+      <div
+        className={`backdrop ${isSessionExpired ? "visible" : "hidden"}`}
+        ref={SessionRef}
+      >
+        <div className="w-2/6 ml-96">
+          <SessionExpired />
+        </div>
+      </div>
+      <div
+        className={`backdrop ${isLoginFailVisible ? "visible" : "hidden"}`}
+        ref={RejectedRef}
+      >
+        <div className="w-2/6 ml-96">
+          <Rejected />
+        </div>
+      </div>
+      <div
+        className={`backdrop ${isLoginSuccessVisible ? "visible" : "hidden"}`}
+        ref={ApprovedRef}
+      >
+        <div className="w-2/6 ml-96">
+          <Approve />
+        </div>
+      </div>
       <div className="mt-16 flex justify-center items-center w-screen h-full">
         <div className="rounded-xl mydiv grid grid-cols-4 gap-5 p-4 border-solid border-2 border-blue-900 mt-2 ml-2">
           {reclamations.map((reclamation) => (
