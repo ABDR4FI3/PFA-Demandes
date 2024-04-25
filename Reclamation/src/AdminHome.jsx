@@ -2,10 +2,12 @@ import Nav from "./Components/Nav";
 import Reclamation from "./Components/Reclamation";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect , useRef } from "react";
+import { useEffect, useRef } from "react";
 import Rejected from "./Components/Rejected";
 import Approve from "./Components/Approve";
 import SessionExpired from "./Components/SessionExpired";
+import MakeAction from "./Components/MakeAction";
+import Modal from "./Components/Modal";
 
 function AdminHome() {
   const [reclamations, setReclamations] = useState([]);
@@ -14,12 +16,14 @@ function AdminHome() {
   const [isLoginFailVisible, setIsLoginFailVisible] = useState(false);
   const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
   const [isSessionExpired, SetisSessionExpired] = useState(false);
+  const [visibility, setVisibility] = useState(false);
+  const [idReclamation , SetidReclamation] = useState()
   const RejectedRef = useRef(null);
   const ApprovedRef = useRef(null);
   const SessionRef = useRef(null);
 
   const switchOn = (ref) => {
-    console.log("test")
+    console.log("test");
     if (ref === RejectedRef) {
       setIsLoginFailVisible(true);
     } else if (ref === ApprovedRef) {
@@ -27,8 +31,8 @@ function AdminHome() {
     }
   };
   const switchOnSimple = () => {
-    console.log("Session Expired")
-      SetisSessionExpired(true);
+    console.log("Session Expired");
+    SetisSessionExpired(true);
   };
 
   const switchOff = () => {
@@ -72,11 +76,9 @@ function AdminHome() {
           //navigate("/home");
         } else {
           // Token is not valid, remove it and navigate to login
-          switchOnSimple()
-          const SessionTimer = setTimeout(() =>navigate("/Login") , 3500);
+          switchOnSimple();
+          const SessionTimer = setTimeout(() => navigate("/Login"), 3500);
           localStorage.removeItem("token");
-
-          
         }
       });
     } else {
@@ -128,8 +130,8 @@ function AdminHome() {
       console.log(token);
       const data = await response.json();
       console.log("Response:", data);
-      switchOn(RejectedRef) 
-      const ApprovedTimer = setTimeout(() =>switchOff() , 3500); 
+      switchOn(RejectedRef);
+      const ApprovedTimer = setTimeout(() => switchOff(), 3500);
 
       // Perform any other actions based on the response, such as updating UI
     } catch (error) {
@@ -156,19 +158,34 @@ function AdminHome() {
       console.log(token);
       const data = await response.json();
       console.log("Response:", data);
-      switchOn(ApprovedRef); 
-      const ApprovedTimer = setTimeout(() =>switchOff() , 3500); 
+      switchOn(ApprovedRef);
+      const ApprovedTimer = setTimeout(() => switchOff(), 3500);
       // Perform any other actions based on the response, such as updating UI
     } catch (error) {
       console.error("Error:", error);
       // Handle error scenarios
     }
   };
+  const switchVisibilityOn = (id) => {
+    setVisibility(true);
+    console.log("reclamation to solve is " , id)
+    SetidReclamation(id)
+  };
+
+  const switchVisibilityOff = () => {
+    setVisibility(false);
+  };
+
 
   //__________________________________________________________
   return (
     <>
       <Nav></Nav>
+      {visibility && (
+        <Modal onClose={switchVisibilityOff}>
+          <MakeAction id={idReclamation} />
+        </Modal>
+      )}
       <div
         className={`backdrop ${isSessionExpired ? "visible" : "hidden"}`}
         ref={SessionRef}
@@ -204,21 +221,8 @@ function AdminHome() {
               details={reclamation.sujet}
               status={reclamation.etat}
             >
-              <div className="grid grid-cols-2 gap-5 w-full">
-                <button
-                  className="ring-1 bg-cyan-200 rounded-2xl self-end hover:ring-white"
-                  onClick={() => solveReclamation(reclamation.idDemande)}
-                >
-                  Solve!
-                </button>
-
-                <button
-                  className="ring-1 bg-red-400 rounded-2xl self-end hover:ring-white"
-                  onClick={() => rejectReclamation(reclamation.idDemande)}
-                >
-                  Reject!
-                </button>
-              </div>
+              <button className="border-2 rounded-xl p-2 border-black hover:text-xl duration-1000 bg-blue-200 mt-2 hover:bg-black hover:text-blue-200"
+              onClick={()=>switchVisibilityOn(reclamation.idDemande)}>Make Action</button>
             </Reclamation>
           ))}
         </div>
