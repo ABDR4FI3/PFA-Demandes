@@ -140,6 +140,7 @@ public class DemandeController {
         response.put("response",200);
         response.put("Receiver" , mailReceiver);
         response.put("motif",motif.getMotif());
+        return response;
     }
 
     @PostMapping("/reclamation/newReject")
@@ -157,5 +158,6 @@ public class DemandeController {
         respose.put("motif",motif.getMotif());
         return respose;
     }
+
 
 }
