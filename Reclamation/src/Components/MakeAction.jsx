@@ -52,6 +52,7 @@ function MakeAction(props) {
       console.log(token);
       const data = await response.json();
       console.log("Response:", data);
+      props.fetchDataFromApi()
       // Perform any other actions based on the response, such as updating UI
     } catch (error) {
       console.error("Error:", error);
@@ -80,6 +81,7 @@ function MakeAction(props) {
       console.log(token);
       const data = await response.json();
       console.log("Response:", data);
+      props.fetchDataFromApi()
       // Perform any other actions based on the response, such as updating UI
     } catch (error) {
       console.error("Error:", error);
