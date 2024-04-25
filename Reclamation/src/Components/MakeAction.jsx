@@ -58,6 +58,34 @@ function MakeAction(props) {
       // Handle error scenarios
     }
   };
+  const handleReject = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const id = props.id; // Assuming id is a parameter
+      const obj = {
+        motif: motifstate,
+      };
+  
+      const response = await fetch(
+        `http://localhost:9090/reclamation/newReject?token=${token}&id=${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(obj), // Convert obj to JSON string
+        }
+      );
+  
+      console.log(token);
+      const data = await response.json();
+      console.log("Response:", data);
+      // Perform any other actions based on the response, such as updating UI
+    } catch (error) {
+      console.error("Error:", error);
+      // Handle error scenarios
+    }
+  };
   
   return (
     <>
@@ -86,7 +114,8 @@ function MakeAction(props) {
             >
               Solve !
             </button>
-            <button className="border-2 p-4 rounded-2xl bg-red-500 text-white font-bold  hover:text-red-500 hover:bg-white duration-1000 hover:border-red-500">
+            <button className="border-2 p-4 rounded-2xl bg-red-500 text-white font-bold  hover:text-red-500 hover:bg-white duration-1000 hover:border-red-500 "
+            onClick={handleReject}>
               Reject !
             </button>
           </div>
