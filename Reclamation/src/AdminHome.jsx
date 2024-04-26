@@ -20,7 +20,7 @@ function AdminHome() {
   const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
   const [isSessionExpired, SetisSessionExpired] = useState(false);
   const [visibility, setVisibility] = useState(false);
-  const [idReclamation, SetidReclamation] = useState();
+  const [idReclamation , SetidReclamation] = useState();
   const RejectedRef = useRef(null);
   const ApprovedRef = useRef(null);
   const SessionRef = useRef(null);
