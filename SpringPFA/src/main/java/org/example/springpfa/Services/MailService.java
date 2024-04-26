@@ -17,6 +17,6 @@ public class MailService {
         message.setSubject("The Admin has Responded to your Request ");
         message.setText(emailBody);
         mailSender.send(message);
-        System.out.println("email sent to Receiver :" + Receiver);
+        System.out.println("email \n" + emailBody +"\nsent to Receiver :" + Receiver);
     }
 }

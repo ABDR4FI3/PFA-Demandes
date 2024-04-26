@@ -135,8 +135,10 @@ public class DemandeController {
         Demande demande = demandeRepository.findByIdDemande(id);
         demande.setEtat("Solved");
         demandeRepository.save(demande);
-        String mailReceiver = userRepository.findByUsername(jwtUtils.extractUserName(token)).getEmail();
-        mailService.sendEmail(motif.getMotif(),mailReceiver);
+        System.out.println("sending  mail Ongoing ");
+        String mailReceiver = userRepository.findByUsername(jwtUtils.extractUserName(token)).getEmail();//get admin's mail
+        String  MailReceiver = demande.getUser().getEmail();//get the reclamation owner's mail
+        mailService.sendEmail(motif.getMotif(),MailReceiver);
         response.put("response",200);
         response.put("Receiver" , mailReceiver);
         response.put("motif",motif.getMotif());
@@ -151,8 +153,11 @@ public class DemandeController {
         Demande demande = demandeRepository.findByIdDemande(id);
         demande.setEtat("Rejected");
         demandeRepository.save(demande);
-        String mailReceiver = userRepository.findByUsername(jwtUtils.extractUserName(token)).getEmail();
-        mailService.sendEmail(motif.getMotif(),mailReceiver);
+        System.out.println("sending  mail Ongoing ");
+        String mailReceiver = userRepository.findByUsername(jwtUtils.extractUserName(token)).getEmail();//get admin's mail
+        String  MailReceiver = demande.getUser().getEmail();//get the reclamation owner's mail
+        mailService.sendEmail(motif.getMotif(),MailReceiver);
+
         respose.put("response",200);
         respose.put("Receiver" , mailReceiver);
         respose.put("motif",motif.getMotif());

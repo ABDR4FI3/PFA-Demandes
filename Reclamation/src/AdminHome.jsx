@@ -11,16 +11,51 @@ import Modal from "./Components/Modal";
 
 function AdminHome() {
   const [reclamations, setReclamations] = useState([]);
+  const [reclamationsPending, setReclamationsPending] = useState([]);
+  const [reclamationsSolved, setReclamationsSolved] = useState([]);
+  const [reclamationsRejected, setReclamationsRejected] = useState([]);
   const navigate = useNavigate();
 
   const [isLoginFailVisible, setIsLoginFailVisible] = useState(false);
   const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
   const [isSessionExpired, SetisSessionExpired] = useState(false);
   const [visibility, setVisibility] = useState(false);
-  const [idReclamation , SetidReclamation] = useState()
+  const [idReclamation , SetidReclamation] = useState();
   const RejectedRef = useRef(null);
   const ApprovedRef = useRef(null);
   const SessionRef = useRef(null);
+
+  useEffect(() => {
+    console.log("Reclamations updated:", reclamations); // Check if reclamations data is correct
+    setReclamationsPending([]);
+    setReclamationsRejected([]);
+    setReclamationsSolved([]);
+
+    reclamations.forEach((reclamation) => {
+      console.log("Processing reclamation:", reclamation); // Check each reclamation
+
+      switch (reclamation.etat) {
+        case "Pending":
+          console.log("Adding to pending:", reclamation);
+          setReclamationsPending((prev) => [...prev, reclamation]);
+          break;
+        case "Solved":
+          console.log("Adding to solved:", reclamation);
+          setReclamationsSolved((prev) => [...prev, reclamation]);
+          break;
+        case "Rejected":
+          console.log("Adding to rejected:", reclamation);
+          setReclamationsRejected((prev) => [...prev, reclamation]);
+          break;
+        default:
+          break;
+      }
+    });
+  }, [reclamations]);
+
+  console.log("Solved", reclamationsSolved);
+  console.log("pending", reclamationsPending);
+  console.log("Rejected", reclamationsRejected);
 
   const switchOn = (ref) => {
     console.log("test");
@@ -86,6 +121,7 @@ function AdminHome() {
       navigate("/Login");
     }
   }, []);
+  console.log(reclamationsSolved);
 
   //
   useEffect(() => {
@@ -168,14 +204,13 @@ function AdminHome() {
   };
   const switchVisibilityOn = (id) => {
     setVisibility(true);
-    console.log("reclamation to solve is " , id)
-    SetidReclamation(id)
+    console.log("reclamation to solve is ", id);
+    SetidReclamation(id);
   };
 
   const switchVisibilityOff = () => {
     setVisibility(false);
   };
-
 
   //__________________________________________________________
   return (
@@ -183,7 +218,7 @@ function AdminHome() {
       <Nav></Nav>
       {visibility && (
         <Modal onClose={switchVisibilityOff}>
-          <MakeAction id={idReclamation} />
+          <MakeAction id={idReclamation} fetchDataFromApi={()=>fetchDataFromApi()} />
         </Modal>
       )}
       <div
@@ -211,7 +246,8 @@ function AdminHome() {
         </div>
       </div>
       <div className="mt-16 flex justify-center items-center w-screen h-full">
-        <div className="rounded-xl mydiv grid grid-cols-4 gap-5 p-4 border-solid border-2 border-blue-900 mt-2 ml-2">
+        {/*
+                <div className="rounded-xl mydiv grid grid-cols-4 gap-5 p-4 border-solid border-2 border-blue-900 mt-2 ml-2">
           {reclamations.map((reclamation) => (
             <Reclamation
               key={reclamation.idDemande}
@@ -225,6 +261,69 @@ function AdminHome() {
               onClick={()=>switchVisibilityOn(reclamation.idDemande)}>Make Action</button>
             </Reclamation>
           ))}
+        </div>
+        */}
+        <div className="ContainerReclamation flex p-8 mt-12 gap-10 border-2 rounded-2xl border-black">
+          {/*Pending*/}
+          <div className="flex-col flex gap-8 ">
+            {reclamationsPending.map((reclamation) => (
+              <Reclamation
+                key={reclamation.idDemande}
+                id={reclamation.idDemande}
+                title={reclamation.title}
+                date={reclamation.date}
+                details={reclamation.sujet}
+                status={reclamation.etat}
+              >
+                <button
+                  className="border-2 rounded-xl p-2 border-black hover:text-xl duration-1000 bg-blue-200 mt-2 hover:bg-black hover:text-blue-200"
+                  onClick={() => switchVisibilityOn(reclamation.idDemande)}
+                >
+                  Make Action
+                </button>
+              </Reclamation>
+            ))}
+          </div>
+          {/*Solved*/}
+          <div className="flex-col flex gap-8">
+            {reclamationsSolved.map((reclamation) => (
+              <Reclamation
+                key={reclamation.idDemande}
+                id={reclamation.idDemande}
+                title={reclamation.title}
+                date={reclamation.date}
+                details={reclamation.sujet}
+                status={reclamation.etat}
+              >
+                <button
+                  className="border-2 rounded-xl p-2 border-black hover:text-xl duration-1000 bg-blue-200 mt-2 hover:bg-black hover:text-blue-200"
+                  onClick={() => switchVisibilityOn(reclamation.idDemande)}
+                >
+                  Make Action
+                </button>
+              </Reclamation>
+            ))}
+          </div>
+          {/*Rejected*/}
+          <div className="flex-col flex gap-8">
+            {reclamationsRejected.map((reclamation) => (
+              <Reclamation
+                key={reclamation.idDemande}
+                id={reclamation.idDemande}
+                title={reclamation.title}
+                date={reclamation.date}
+                details={reclamation.sujet}
+                status={reclamation.etat}
+              >
+                <button
+                  className="border-2 rounded-xl p-2 border-black hover:text-xl duration-1000 bg-blue-200 mt-2 hover:bg-black hover:text-blue-200"
+                  onClick={() => switchVisibilityOn(reclamation.idDemande)}
+                >
+                  Make Action
+                </button>
+              </Reclamation>
+            ))}
+          </div>
         </div>
       </div>
     </>
