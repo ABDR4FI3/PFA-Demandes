@@ -12,7 +12,7 @@ public class MailService {
 
     public void sendEmail(String emailBody, String Receiver) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("taskmanagerapp@zohomail.com");
+        message.setFrom("hotel.golden620@gmail.com");
         message.setTo(Receiver);
         message.setSubject("The Admin has Responded to your Request ");
         message.setText(emailBody);
