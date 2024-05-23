@@ -8,17 +8,20 @@ import { useNavigate } from "react-router-dom";
 function App() {
   const [visibility, setVisibility] = useState(false);
   const [reclamations, setReclamations] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkTokenValidity = async (token) => {
       try {
-        const response = await fetch(`http://localhost:9090/checkToken?token=${token}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `http://localhost:9090/checkToken?token=${token}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -37,7 +40,7 @@ function App() {
     const token = localStorage.getItem("token");
     if (token) {
       checkTokenValidity(token).then((valid) => {
-        console.log(valid)
+        console.log(valid);
         if (valid) {
           // Token is valid, navigate to home
           //navigate("/home");
@@ -61,13 +64,13 @@ function App() {
     try {
       // Get the token from localStorage
       const token = localStorage.getItem("token");
-      console.log(token)
+      console.log(token);
       // Check if token exists
       if (!token) {
         throw new Error("Token not found in localStorage");
       }
-      console.log("bug")
-  
+      console.log("bug");
+
       const response = await fetch("http://localhost:9090/reclamation", {
         method: "POST",
         headers: {
@@ -77,11 +80,11 @@ function App() {
         },
         body: token,
       });
-  
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-  
+
       const data = await response.json();
       setReclamations(data);
       console.log("Data from API:", data);
@@ -91,7 +94,7 @@ function App() {
       return null;
     }
   };
-  
+
   const addNoteHandle = async (noteData) => {
     const token = localStorage.getItem("token"); // Assuming token is stored locally after login
     const requestOptions = {
@@ -101,17 +104,17 @@ function App() {
       },
       body: JSON.stringify(noteData), // Send noteData as the request body
     };
-  
+
     try {
       const response = await fetch(
         `http://localhost:9090/demandes/add?token=${token}`, // Include the token as a URL query parameter
         requestOptions
       );
-  
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-  
+
       const data = await response.json();
       console.log("Note added successfully:", data);
       fetchDataFromApi();
@@ -119,13 +122,17 @@ function App() {
       console.error("There was a problem adding the note:", error);
     }
   };
-  
+
   const switchVisibilityOn = () => {
     setVisibility(true);
   };
 
   const switchVisibilityOff = () => {
     setVisibility(false);
+  };
+  const logout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
   return (
@@ -139,7 +146,15 @@ function App() {
           />
         </Modal>
       )}
-      <div className="mt-16 flex justify-center items-center w-screen h-full">
+      <div className="mt-16 flex flex-col justify-center items-center w-screen h-full">
+        <div className="flex w-full justify-end items-center mt">
+          <button className="p-4 w-32 mr-6 border-2 bg-purple-500 text-white rounded-2xl border-white mt-6 mb-6 "
+          onClick={switchVisibilityOn}>
+            Addnote
+          </button>
+          <button className="border-2 p-4 bg-purple-500 rounded-2xl text-white font-bold font-mono border-white ring-1 ring-purple-500 hover:text-purple-500 hover:bg-white duration-1000"
+      onClick={logout}>Log out</button>
+        </div>
         <div className="rounded-xl mydiv grid grid-cols-4 gap-5 p-4 border-solid border-2 border-blue-900 mt-2 ml-2">
           {reclamations.map((reclamation) => (
             <Reclamation

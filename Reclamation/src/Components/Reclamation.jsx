@@ -34,6 +34,7 @@ function Reclamation(props) {
     default:
       backgroundColor = ""; // Default background color
   }
+  console.log("props" , props)
 
   return (
     <>

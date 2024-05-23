@@ -6,6 +6,7 @@ import org.example.springpfa.Services.JWTUtils;
 import org.example.springpfa.Services.MailService;
 import org.example.springpfa.Services.UserService;
 import org.example.springpfa.entities.Demande;
+import org.example.springpfa.entities.DemandeDTO;
 import org.example.springpfa.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,32 +46,31 @@ public class DemandeController {
     }
     //add new User
     @PostMapping("/demandes/add")
-    public int PostUser(@RequestBody Demande demande , @RequestParam String token){
+    public int CreateDemand(@RequestBody Demande demande , @RequestParam String token){
 
         System.out.println(token);
         String userName = jwtUtils.extractUserName(token);
-        System.out.println(userName);
-        User user = userRepository.findByUsername(userName);
-        System.out.println(user.getUsername());
-        System.out.println(user.getUserRole());
-        System.out.println(user.getId());
-        System.out.println(user.getEmail());
-        System.out.println(user.getTel());
-        user.setDemandes(null);
-        System.out.println(user);
-        System.out.println();
-        Demande demande1 = new Demande();
-        demande1.setUser(user);
-        demande1.setIdDemande(null);
-        demande1.setSujet(demande.getSujet());
-        demande1.setDate(demande.getDate());
-        demande1.setEtat("pending");
-        demande1.setTitle(demande.getTitle());
-
-        System.out.println("user");
-        System.out.println(demande1);
-        demandeRepository.save(demande1);
+        System.out.println("my demand json\n" + demande);
         return 1;
+    }
+    @PostMapping("/demandes/add/dto")
+    public Map<String ,Object> CreateDemandeDTO(@RequestBody DemandeDTO demandeDTO , @RequestParam String token){
+        Map<String ,Object> response = new HashMap<>();
+        System.out.println(token);
+        String userName = jwtUtils.extractUserName(token);
+        Demande demande = Demande.builder()
+                .date(demandeDTO.getDate())
+                .etat("Pending")
+                .sujet(demandeDTO.getSujet())
+                .title(demandeDTO.getTitle())
+                .user(userRepository.findByUsername(userName))
+                .build();
+        demandeRepository.save(demande);
+        response.put("userName", userName);
+        response.put("demandeDTO", demandeDTO);
+        response.put("demade", demande);
+
+        return response ;
     }
 
 
@@ -87,6 +87,7 @@ public class DemandeController {
 
     @GetMapping("/checkToken")
     public boolean checkToken(@RequestParam("token") String token) {
+        System.out.println(token);
         return !jwtUtils.extractExpiration(token).before(new Date());
     }
 
