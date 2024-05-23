@@ -6,7 +6,7 @@ function MakeReclamation(props) {
   // States
   const [Details, SetDetails] = useState("Empty");
   const [Title, SetTitle] = useState("Title");
-  const [Date, SetDate] = useState("todayDate");
+  const [Date, SetDate] = useState();
 
   // Handle Changes
   function DetailsHandler(event) {
@@ -40,6 +40,44 @@ function MakeReclamation(props) {
     props.onAddNote(NoteData);
     props.onCancel();
   }
+
+  const addNoteHandle = async () => {
+    const token = localStorage.getItem("token"); // Assuming token is stored locally after login
+    const NewNote = {
+      title: Title,
+      sujet: Details,
+      date: Date,
+      etat: "pending",
+    };
+    
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(NewNote), // Convert NewNote to a JSON string
+    };
+  
+    try {
+      const response = await fetch(
+        `http://localhost:9090/demandes/add/dto?token=${token}`, // Include the token as a URL query parameter
+        requestOptions
+      );
+  
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      
+      console.log("JSON input", NewNote);
+      const data = await response.json();
+      console.log("Note added successfully:", data);
+      
+    } catch (error) {
+      console.error("There was a problem adding the note:", error);
+    }
+  };
+  
+
 
   return (
     <div className="  bg-gradient-to-r from-orange-200 via-stone-200 to-teal-100">
@@ -86,9 +124,9 @@ function MakeReclamation(props) {
         />
         <button
           type="submit"
-          className="SubmitButton text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+          className="SubmitButton text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" onClick={addNoteHandle}
         >
-          Add New Post
+          Submit
         </button>
       </form>
     </div>

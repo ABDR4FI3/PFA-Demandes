@@ -1,6 +1,7 @@
 package org.example.springpfa.Controller;
 
 import org.example.springpfa.Repository.UserRepository;
+import org.example.springpfa.Repository.UserRoleRepository;
 import org.example.springpfa.Services.JWTUtils;
 import org.example.springpfa.Services.PasswordEncoderService;
 import org.example.springpfa.Services.UserService;
@@ -19,6 +20,8 @@ import java.util.Map;
 public class UserController {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    UserRoleRepository userRoleRepository;
     @Autowired
     UserService userService ;
     @Autowired
@@ -39,8 +42,14 @@ public class UserController {
     }
     //add new User
     @PostMapping("/user/add")
-    public void PostUser(@RequestBody User user){
+    public Map<String ,Object> PostUser(@RequestBody User user){
+        Map<String ,Object> map = new HashMap<>();
+        user.setUserRole(userRoleRepository.findById(1));
         userService.addUser(user);
+        map.put("message", "User Added Successfully");
+        map.put("token", jwtUtils.generateToken(user));
+        map.put("response", 200);
+        return map;
     }
     //Edit an existing user :
     @PutMapping("/user/edit/{id}")

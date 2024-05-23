@@ -19,7 +19,7 @@ import java.util.function.Function;
 @Component
 public class JWTUtils {
     private SecretKey secretKey;
-    private static final long ExpirationTime =  360_000_000 ; // 3_600_000 milliseconds in 1 hour #to test use 5_000
+    private static final long ExpirationTime = 3_600_000 ; // 3_600_000 milliseconds in 1 hour #to test use 5_000
 
     public JWTUtils(){
         // Hardcoded secret string (should be kept secure and not hardcoded in real-world scenarios)
@@ -75,8 +75,7 @@ public class JWTUtils {
                 .parseClaimsJws(token)
                 .getBody()
                 .getIssuedAt();
-        System.out.println("claims.getExpiration()");
-        System.out.println(claims);
+
         Date dateExpiration = new Date(claims.getTime()+ExpirationTime);
 
         return dateExpiration;
@@ -85,8 +84,6 @@ public class JWTUtils {
 
     public boolean isTokenValid(String token, User user){
         final String userName = extractUserName(token);
-        System.out.println(userName);
-        System.out.println((userName.equals(user.getUsername())) && !isTokenExpired(token));
         return (userName.equals(user.getUsername())) && !isTokenExpired(token);
     }
 

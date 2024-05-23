@@ -20,7 +20,7 @@ function AdminHome() {
   const [isLoginSuccessVisible, setIsLoginSuccessVisible] = useState(false);
   const [isSessionExpired, SetisSessionExpired] = useState(false);
   const [visibility, setVisibility] = useState(false);
-  const [idReclamation , SetidReclamation] = useState();
+  const [idReclamation, SetidReclamation] = useState();
   const RejectedRef = useRef(null);
   const ApprovedRef = useRef(null);
   const SessionRef = useRef(null);
@@ -73,6 +73,10 @@ function AdminHome() {
   const switchOff = () => {
     setIsLoginFailVisible(false);
     setIsLoginSuccessVisible(false);
+  };
+  const logout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
   useEffect(() => {
@@ -143,7 +147,7 @@ function AdminHome() {
     if (!response.ok) {
       throw new Error(data.message || "Failed to fetch data");
     }
-    console.log(data);
+    console.log("dmeands " , data);
     setReclamations(data);
     return data;
   };
@@ -218,9 +222,13 @@ function AdminHome() {
       <Nav></Nav>
       {visibility && (
         <Modal onClose={switchVisibilityOff}>
-          <MakeAction id={idReclamation} fetchDataFromApi={()=>fetchDataFromApi()} />
+          <MakeAction
+            id={idReclamation}
+            fetchDataFromApi={() => fetchDataFromApi()}
+          />
         </Modal>
       )}
+
       <div
         className={`backdrop ${isSessionExpired ? "visible" : "hidden"}`}
         ref={SessionRef}
@@ -245,7 +253,16 @@ function AdminHome() {
           <Approve />
         </div>
       </div>
-      <div className="mt-16 flex justify-center items-center w-screen h-full">
+      <div className="flex mt-20 justify-end  ">
+        {" "}
+        <button
+          className="border-2 p-4 bg-purple-500 rounded-2xl text-white font-bold font-mono border-white ring-1 ring-purple-500 hover:text-purple-500 hover:bg-white duration-1000"
+          onClick={logout}
+        >
+          Log out
+        </button>
+      </div>
+      <div className=" flex justify-center items-center w-screen h-full">
         {/*
                 <div className="rounded-xl mydiv grid grid-cols-4 gap-5 p-4 border-solid border-2 border-blue-900 mt-2 ml-2">
           {reclamations.map((reclamation) => (
